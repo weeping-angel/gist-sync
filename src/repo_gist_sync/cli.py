@@ -19,25 +19,20 @@ def run(
 
     if create:
         response_data = gist_api.create_gist(file_name=file_name)
-        click.echo(str(response_data))
 
     elif update:
         if not gist_id:
             response_data = gist_api.update_gist(file_name=file_name)
-
         else:
             response_data = gist_api.update_gist(file_name=file_name, gist_id=gist_id)
 
-        click.echo(str(response_data))
-
     elif delete:
         if not gist_id:
-            response_int = gist_api.delete_gist(file_name=file_name)
-
+            response_data = gist_api.delete_gist(file_name=file_name)
         else:
-            response_int = gist_api.delete_gist(gist_id=gist_id)
+            response_data = gist_api.delete_gist(gist_id=gist_id)
 
-        click.echo(str(response_int))
+    click.echo(str(response_data))
 
 @click.command()
 @click.option("-t", "--auth-token", help="GIST REST API token")
