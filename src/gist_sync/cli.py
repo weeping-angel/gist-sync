@@ -15,7 +15,7 @@ from . import GistSync
 def run(
     create: bool, update: bool, delete: bool, auth_token: str, file_name: str, gist_id: str
 ) -> None:
-    gist_api = GISTyc(auth_token=auth_token)
+    gist_api = GistSync(auth_token=auth_token)
 
     if create:
         response_data = gist_api.create_gist(file_name=file_name)
@@ -43,7 +43,7 @@ def run(
 @click.option("-t", "--auth-token", help="GIST REST API token")
 @click.option("-d", "--directory", help="Directory that contains Python scripts")
 def dir_run(auth_token: str, directory: t.Union[pathlib.Path, str]) -> None:
-    gist_api = GISTyc(auth_token=auth_token)
+    gist_api = GistSync(auth_token=auth_token)
     dir_path = pathlib.Path(directory)
     gists = gist_api.get_gists()
 
