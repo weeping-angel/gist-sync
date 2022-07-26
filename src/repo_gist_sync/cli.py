@@ -38,21 +38,27 @@ def run(
 @click.option("-t", "--auth-token", help="GIST REST API token")
 @click.option("-d", "--directory", help="Directory that contains Python scripts")
 def dir_run(auth_token: str, directory: t.Union[pathlib.Path, str]) -> None:
+    # print('Running Gist sync on directory - ', directory)
     gist_api = GistSync(auth_token=auth_token)
+    # print('Got Gist API Object')
     dir_path = pathlib.Path(directory)
     gists = gist_api.get_gists()
+    # print('Got all the gists - ', len(gists))
 
     gist_files_dictfiles = [list(gist_item["files"].keys()) for gist_item in gists]
     gist_files = [x for x in gist_files_dictfiles for x in x]
 
-    for python_filepath in dir_path.rglob("*.py"):
-        click.echo(python_filepath)
-        python_filename = python_filepath.name
-        if python_filename in gist_files:
+    filepaths = list(dir_path.rglob("*.py")) + list(dir_path.rglob("*.sh"))
+
+    for filepath in filepaths:
+        # print('[FILE]: ', python_filepath)
+        click.echo(filepath)
+        filename = filepath.name
+        if filename in gist_files:
             click.echo("UPDATE")
-            _ = gist_api.update_gist(file_name=python_filepath)
+            gist_api.update_gist(file_name=filepath)
         else:
             click.echo("CREATE")
-            _ = gist_api.create_gist(file_name=python_filepath)
+            gist_api.create_gist(file_name=filepath)
 
     click.echo("DONE")

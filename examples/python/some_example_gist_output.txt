@@ -1,0 +1,9 @@
+{'city': 'Bhopal',
+ 'country': 'IN',
+ 'ip': '49.35.29.61',
+ 'loc': '24.7179,71.8333',
+ 'org': 'AS55836 Reliance Jio Infocomm Limited',
+ 'postal': '452002',
+ 'readme': 'https://ipinfo.io/missingauth',
+ 'region': 'Madhya Pradesh',
+ 'timezone': 'Asia/Kolkata'}

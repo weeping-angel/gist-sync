@@ -6,9 +6,7 @@ import requests
 
 
 class GISTAmbiguityError(Exception):
-    def __init__(
-        self, gist_ids_list: t.List[str], message: str = "Number of GIST IDs is too ambiguous"
-    ) -> None:
+    def __init__(self, gist_ids_list: t.List[str], message: str = "Number of GIST IDs is too ambiguous") -> None:
         self.gist_ids_list = gist_ids_list
         self.message = message
 
@@ -24,50 +22,75 @@ class GistSync:
         self._headers = {"Authorization": f"token {auth_token}"}
 
     @staticmethod
-    def _readnparse_python_file(
-        file_name: t.Union[Path, str], sep: str = "#%%"
-    ) -> t.Dict[t.Any, t.Any]:
+    def _readnparse_python_file(file_name: t.Union[Path, str], sep: str = "#%%") -> t.Dict[t.Any, t.Any]:
+        codelines = open(Path(file_name), 'r').readlines()
+        filename, extension = file_name.name.split('.')
 
-        file_name = Path(file_name)
+        if extension in ['py', 'sh']:
+            snippet_count = 0
+            snippets = ['']
 
-        with open(file_name, "r") as file_obj:
-            file_content = file_obj.read()
+            metadata=  ''
+            for line in codelines:
+                if '#-- title:' in line:
+                    title = line.replace('#-- title:', '').strip()
+                    metadata += f'[{title}] '
+                elif '#-- description:' in line:
+                    description = line.replace('#-- description:', '').strip()
+                    metadata += f'{description} '
+                elif '#-- tags:' in line:
+                    tags = line.replace('#-- tags:', '').strip()
+                    metadata += ' '.join([f'#{tag.strip()}' for tag in tags.split(',')])
+                elif '#%%' in line:
+                    snippet_count += 1
+                    snippets.append('')
+                else:
+                    snippets[snippet_count] += line
 
-        core_file_name = file_name.name
+            gist_code_dict = {
+                file_name.name: {"content": '\n\n'.join([i.strip('\n') for i in snippets])},
+            }
 
-        file_content_list = file_content.split(f"{sep}\n")
+            if len(snippets) > 1:
+                for index, snippet in enumerate(snippets):
+                    gist_code_dict[f"{filename}_{index+1}.{extension}"] = {"content": snippet.strip('\n')}
 
-        gist_code_dict = {}
+            try:
+                output_filename = f"{filename}_output.txt"
+                output_filepath = f"{file_name.parent}/{output_filename}"
 
-        for index, k in enumerate(file_content_list):
-            if index == 0:
-                gist_code_dict[core_file_name] = {"content": k}
+                output = open(Path(output_filepath), 'r').read()
 
-            else:
-                gist_code_dict[core_file_name.replace(".py", f"_{index}.py")] = {"content": k}
+                gist_code_dict[output_filename] = {"content": output.strip('\n')}
 
-        data = {
-            "public": True,
-            "files": gist_code_dict,
-        }
+            except Exception as e:
+                print("No output file found")
 
-        return data
+            data = {
+                "public": True,
+                "description": metadata,
+                "files": gist_code_dict,
+            }
 
-    def _get_gist_id(
-        self, file_name: t.Optional[Path] = None, gist_id: t.Optional[str] = None
-    ) -> str:
+            return data
+
+        else:
+            return {
+                "public": True,
+                "files": {
+                    file_name.name: open(Path(file_name), 'r').read()
+                }
+            }
+
+        
+
+    def _get_gist_id(self, file_name: t.Optional[Path] = None, gist_id: t.Optional[str] = None) -> str:
         if isinstance(gist_id, str):
             gist_id_ret = gist_id
 
         elif isinstance(file_name, Path):
-            gist_ids = []
-            gist_list = self.get_gists()
-
-            for _gist in gist_list:
-                if file_name.name in _gist["files"]:
-                    gist_ids.append(_gist["id"])
-
-            if len(gist_ids) > 1:
+            gist_ids = [gist['id'] for gist in self.get_gists() if file_name.name in gist['files']]
+            if len(set(gist_ids)) > 1:
                 raise GISTAmbiguityError(gist_ids_list=gist_ids)
 
             gist_id_ret = gist_ids[0]
@@ -75,23 +98,25 @@ class GistSync:
         return gist_id_ret
 
     def get_gists(self) -> t.List[t.Dict]:
-        _query_url = "https://api.github.com/gists?page=PAGE&per_page=100"
-        resp_data = []
-        cntr = 0
-        _resp_ansr = True
-        while _resp_ansr:
-            cntr += 1
+        def _get_gists_resp(page_no=0):
+            url = f"https://api.github.com/gists?page={page_no}&per_page=100"
+            resp = requests.get(url, headers=self._headers)
+            return resp
 
-            resp = requests.get(_query_url.replace("PAGE", str(cntr)), headers=self._headers)
-            resp_content = resp.json()
+        gists = []
 
-            if len(resp_content) > 0:
-                resp_data.extend(resp_content)
+        i = 0
+        resp = _get_gists_resp(i)
+        resp_json = resp.json()
 
-            else:
-                _resp_ansr = False
+        while resp_json and resp.status_code!=401:
+            gists.extend(resp_json)
+            
+            i += 1
+            resp = _get_gists_resp(page_no=i)
+            resp_json = resp.json()
 
-        return resp_data
+        return gists
 
     def create_gist(self, file_name: t.Union[Path, str], sep: str = "#%%") -> t.List:
         _query_url = "https://api.github.com/gists"
@@ -117,9 +142,7 @@ class GistSync:
 
         return resp_data
 
-    def delete_gist(
-        self, file_name: t.Optional[t.Union[Path, str]] = None, gist_id: t.Optional[str] = None
-    ) -> int:
+    def delete_gist(self, file_name: t.Optional[t.Union[Path, str]] = None, gist_id: t.Optional[str] = None) -> int:
         if file_name:
             file_name = Path(file_name)
             gist_id = self._get_gist_id(file_name=file_name, gist_id=gist_id)
