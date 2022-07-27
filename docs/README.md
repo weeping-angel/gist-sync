@@ -71,7 +71,7 @@ print(user.user_id)
 2. Sync using `gistdirsync` CLI tool (from local machine or via Github Actions).
 
 ```shell
-gistdirsync --auth-token $GIST_TOKEN --directory /path/to/folder
+gistdirsync --auth-token $GIST_TOKEN --directory /path/to/examples
 ```
 
 3. Resulting Gist looks like [this](https://gist.github.com/weeping-angel/c4e694ee6f2ede9d7261acd87152e8f7).
@@ -163,8 +163,8 @@ jobs:
 ## Features
 
 - Supports python (`.py`) and shellscripts (`.sh`)
-- Can write metadata in file itself
-- Break the code in smaller snippets
-- can save the output in the corresponding gist by naming the file as "_filename_**_output.txt**"
+- Can write metadata (title, description, tags) for gists in code file itself.
+- Break the code in smaller snippets using separator (`#%%`). 
+- Can save the output in the corresponding gist by creating an additional file as "_filename_**_output.txt**"
 
 
