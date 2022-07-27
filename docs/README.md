@@ -74,9 +74,55 @@ print(user.user_id)
 gistdirsync --auth-token $GIST_TOKEN --directory /path/to/folder
 ```
 
-3. Resulting Gist looks like this:
+3. Resulting Gist looks like [this](https://gist.github.com/weeping-angel/c4e694ee6f2ede9d7261acd87152e8f7).
 
-<script src="https://gist.github.com/weeping-angel/c4e694ee6f2ede9d7261acd87152e8f7"></script>
+`get_user_id.py`
+```python
+# Import libraries
+import os
+from medium_api import Medium
+
+# Get RAPIDAPI_KEY from the environment
+api_key = os.getenv('RAPIDAPI_KEY')
+
+# Create a `Medium` Object
+medium = Medium(api_key)
+
+# Get the `User` Object using "username" and print ID
+user = medium.user(username="nishu-jain")
+print(user.user_id)
+```
+`get_user_id_1.py`
+```python
+# Import libraries
+import os
+from medium_api import Medium
+```
+
+`get_user_id_2.py`
+```python
+
+# Get RAPIDAPI_KEY from the environment
+api_key = os.getenv('RAPIDAPI_KEY')
+```
+
+`get_user_id_3.py`
+```python
+# Create a `Medium` Object
+medium = Medium(api_key)
+```
+
+`get_user_id_4.py`
+```python
+# Get the `User` Object using "username" and print ID
+user = medium.user(username="nishu-jain")
+print(user.user_id)
+```
+
+`get_user_id_output.txt`
+```plain
+1985b61817c3
+```
 
 ## Continuous Deployment with Github Actions
 
