@@ -128,6 +128,8 @@ print(user.user_id)
 
 ## Continuous Deployment with Github Actions
 
+> **Note:** You can generate the GIST_TOKEN in [Github Settings](https://github.com/settings/tokens) and place it in "secrets" in repository's settings.
+
 Place an YAML file under `.github/workflow/repo-gist-sync.yml` with the following content:
 
 
@@ -165,8 +167,6 @@ jobs:
 ```
 
 > **Note:** Change directory name ("examples") as per required.
-
-> **Note:** You can generate the GIST_TOKEN in [Github Settings](https://github.com/settings/tokens) and place it in "secrets" in repository's settings.
 
 ## Features
 
