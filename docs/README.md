@@ -166,12 +166,12 @@ jobs:
       run: gistdirsync --auth-token ${{ secrets.GIST_TOKEN }} --directory ./examples/
 ```
 
-> **Note:** Change directory name ("examples") as per required.
+> **Note:** Change directory name ("examples") as per required in the yaml file.
 
 ## Features
 
 - Supports python (`.py`) and shellscripts (`.sh`)
-- Can write metadata (title, description, tags) for gists in code file itself.
+- Can write metadata (_title, description, & tags_) for gists in code file itself (`#--`).
 - Break the code in smaller snippets using separator (`#%%`). 
 - Can save the output in the corresponding gist by creating an additional file as "_filename_**_output.txt**"
 
