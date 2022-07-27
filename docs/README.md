@@ -164,6 +164,10 @@ jobs:
       run: gistdirsync --auth-token ${{ secrets.GIST_TOKEN }} --directory ./examples/
 ```
 
+> **Note:** Change directory name ("examples") as per required.
+
+> **Note:** You can generate the GIST_TOKEN in [Github Settings](https://github.com/settings/tokens) and place it in "secrets" in repository's settings.
+
 ## Features
 
 - Supports python (`.py`) and shellscripts (`.sh`)
