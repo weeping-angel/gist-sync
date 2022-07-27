@@ -76,6 +76,8 @@ gistdirsync --auth-token $GIST_TOKEN --directory /path/to/examples
 
 3. Resulting Gist looks like [this](https://gist.github.com/weeping-angel/c4e694ee6f2ede9d7261acd87152e8f7).
 
+[Get User's ID] Code to retrieve user_id from username #python #medium_api #medium_api_py 
+
 `get_user_id.py`
 ```python
 # Import libraries
