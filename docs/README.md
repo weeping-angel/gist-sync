@@ -34,7 +34,7 @@ Dependencies: `requests`, `click`
 
 ## Example
 
-1. Write the Code as follows:
+1. Write the Code as follows (in the repository, examples folder):
 
 - `get_user_id.py`
 
@@ -68,7 +68,7 @@ print(user.user_id)
 1985b61817c3
 ```
 
-2. Sync using `gistdirsync` CLI tool.
+2. Sync using `gistdirsync` CLI tool (from local machine or via Github Actions).
 
 ```shell
 gistdirsync --auth-token $GIST_TOKEN --directory /path/to/folder
