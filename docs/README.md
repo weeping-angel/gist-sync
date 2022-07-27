@@ -126,6 +126,8 @@ print(user.user_id)
 
 ## Continuous Deployment with Github Actions
 
+Place an YAML file under `.github/workflow/repo-gist-sync.yml` with the following content:
+
 
 ```yaml
 name: GIST CD on main branch and example directory change
