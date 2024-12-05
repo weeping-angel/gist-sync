@@ -170,8 +170,8 @@ jobs:
 
 ## Features
 
-- Supports python (`.py`) and shellscripts (`.sh`)
-- Can write metadata (_title, description, & tags_) for gists in code file itself (`#--`).
+- Supports python (`.py`), javascrip (`.js`) and shellscripts (`.sh`)
+- In case of python and shellscripts, it can write metadata (_title, description, & tags_) for gists in code file itself (`#--`).
 - Break the code in smaller snippets using separator (`#%%`). 
 - Can save the output in the corresponding gist by creating an additional file as "_filename_**_output.txt**"
 

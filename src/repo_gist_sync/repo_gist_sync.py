@@ -73,7 +73,29 @@ class GistSync:
             }
 
             return data
+        
+        elif extension in ['js']:
+            gist_code_dict = {
+                file_name.name: {"content": '\n'.join([i.strip('\n') for i in codelines])},
+            }
+            try:
+                output_filename = f"{filename}_output.txt"
+                output_filepath = f"{file_name.parent}/{output_filename}"
 
+                output = open(Path(output_filepath), 'r').read()
+
+                gist_code_dict[output_filename] = {"content": output.strip('\n')}
+
+            except Exception as e:
+                print("No output file found")
+
+            data = {
+                "public": True,
+                "files": gist_code_dict,
+            }
+
+            return data
+        
         else:
             return {
                 "public": True,
